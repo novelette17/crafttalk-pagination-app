@@ -11,6 +11,10 @@ const Grid = () => {
 
   const responseData = productsList.data;
   const responseSkip = Number(responseData?.skip) || 0;
+  const responseTotal = Number(responseData?.total) || 0;
+
+  const isNextDisabled = responseTotal <= SKIP_NUM_DIFF + responseSkip;
+  const isPrevDisabled = !responseSkip;
 
   useEffect(() => {
     getProductsList({
@@ -68,8 +72,18 @@ const Grid = () => {
         </tbody>
       </table>
       <div className="manage">
-        <button onClick={() => handleNavigate("prev")}>Prev</button>
-        <button onClick={() => handleNavigate("next")}>Next</button>
+        <button
+          disabled={isPrevDisabled}
+          onClick={() => handleNavigate("prev")}
+        >
+          Prev
+        </button>
+        <button
+          disabled={isNextDisabled}
+          onClick={() => handleNavigate("next")}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
