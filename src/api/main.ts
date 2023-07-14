@@ -6,10 +6,15 @@ import {
 } from "@reduxjs/toolkit/query/react";
 
 import { BASE_API_URL } from "@src/envs";
-import { createEncodedForm } from "./utils";
+import { buildQueryString, createEncodedForm } from "./utils";
 import { MutationLifecycleApi } from "@reduxjs/toolkit/dist/query/endpointDefinitions";
 import { BaseQueryError } from "@reduxjs/toolkit/dist/query/baseQueryTypes";
-import { TSignInResponse } from "@src/types";
+import {
+  TGetProductsArgs,
+  TGetProductsReponseEntry,
+  TResponseWithPagination,
+  TSignInResponse,
+} from "@src/types";
 import { appTokensManager } from "./appTokensManager";
 import { login } from "@src/store/reducers/auth";
 
@@ -20,7 +25,7 @@ export type BaseQueryWrapperFn = BaseQueryFn<
 >;
 
 const onQueryStartedSignInCallback = async (
-  { username, password }: any,
+  _: any,
   {
     queryFulfilled,
     dispatch,
@@ -56,9 +61,47 @@ export const mainApi = createApi({
       }),
       onQueryStarted: onQueryStartedSignInCallback,
     }),
+
+    getProducts: builder.query<
+      TResponseWithPagination<"products", TGetProductsReponseEntry>,
+      TGetProductsArgs
+    >({
+      query: ({ limit = 20, skip = 0, search }) => {
+        const accessToken = appTokensManager.getAccessToken();
+        let url = buildQueryString({
+          baseUrl: "/products",
+          params: {
+            limit,
+            skip,
+            select: "title,price",
+          },
+        });
+
+        if (search) {
+          url = buildQueryString({
+            baseUrl: "/products/search",
+            params: {
+              limit,
+              skip,
+              select: "title,price",
+              q: search,
+            },
+          });
+        }
+
+        return {
+          url,
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        };
+      },
+    }),
   }),
 });
 
-export const { useSignInMutation } = mainApi;
+export const { useSignInMutation, useLazyGetProductsQuery } = mainApi;
 
-export const { signIn } = mainApi.endpoints;
+export const { signIn, getProducts } = mainApi.endpoints;
