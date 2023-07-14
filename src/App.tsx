@@ -4,18 +4,24 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { useSignInMutation } from "./api/main";
 import { withHocs } from "./app/hocs";
+import { selectIsAuthenticated } from "./store/reducers/auth";
+import { useSelector } from "react-redux";
 
 export const App = withHocs(() => {
   const [count, setCount] = useState(0);
   const [signIn] = useSignInMutation();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  //@temporary
   useEffect(() => {
     signIn({
       username: "kminchelle",
       password: "0lelplR",
     });
   }, []);
+
+  if (!isAuthenticated) {
+    return <h3>Авторизация...</h3>;
+  }
 
   return (
     <>

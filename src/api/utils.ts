@@ -18,3 +18,5 @@ export const createEncodedForm = (
 
   return formBody.join("&");
 };
+
+export const { localStorage } = window;

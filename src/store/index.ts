@@ -12,6 +12,7 @@ import { createLogger } from "redux-logger";
 import { mainApi } from "@api/main";
 
 import { isDevEnv } from "@src/envs";
+import { authReducer } from "./reducers/auth";
 
 const middlewares = [mainApi.middleware];
 
@@ -26,6 +27,7 @@ if (isDevEnv) {
 }
 
 export const rootReducer = combineReducers({
+  auth: authReducer,
   [mainApi.reducerPath]: mainApi.reducer,
 });
 

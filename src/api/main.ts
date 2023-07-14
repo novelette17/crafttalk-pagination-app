@@ -9,11 +9,14 @@ import { BASE_API_URL } from "@src/envs";
 import { createEncodedForm } from "./utils";
 import { MutationLifecycleApi } from "@reduxjs/toolkit/dist/query/endpointDefinitions";
 import { BaseQueryError } from "@reduxjs/toolkit/dist/query/baseQueryTypes";
+import { TSignInResponse } from "@src/types";
+import { appTokensManager } from "./appTokensManager";
+import { login } from "@src/store/reducers/auth";
 
 export type BaseQueryWrapperFn = BaseQueryFn<
   string | FetchArgs,
   unknown,
-  BaseQueryError | undefined
+  BaseQueryError<any> | undefined
 >;
 
 const onQueryStartedSignInCallback = async (
@@ -21,12 +24,13 @@ const onQueryStartedSignInCallback = async (
   {
     queryFulfilled,
     dispatch,
-  }: MutationLifecycleApi<any, BaseQueryWrapperFn, any, "mainApi">,
+  }: MutationLifecycleApi<any, BaseQueryWrapperFn, TSignInResponse, "mainApi">,
 ) => {
   try {
     const { data } = await queryFulfilled;
+    appTokensManager.setAccessToken(data.token);
 
-    console.log(">>>", data);
+    dispatch(login());
   } catch {
   } finally {
     console.log("signed");
