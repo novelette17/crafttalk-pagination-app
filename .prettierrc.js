@@ -1,0 +1,21 @@
+module.exports = {
+  semi: true,
+  singleQuote: false,
+  trailingComma: "all",
+  bracketSpacing: true,
+  useTabs: false,
+  tabWidth: 2,
+  printWidth: 80,
+  arrowParens: "always",
+  endOfLine: "auto",
+  importOrder: [
+    "^react(.*)$",
+    "^(react-|@)?redux(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^\\b(.*)\\b(.*)$",
+    "^[./]",
+  ],
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
+  importOrderGroupNamespaceSpecifiers: true,
+};
