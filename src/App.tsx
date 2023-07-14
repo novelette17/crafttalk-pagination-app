@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import { useSignInMutation } from "./api/main";
+import { withHocs } from "./app/hocs";
 
-function App() {
+export const App = withHocs(() => {
   const [count, setCount] = useState(0);
+  const [signIn] = useSignInMutation();
+
+  //@temporary
+  useEffect(() => {
+    signIn({
+      username: "kminchelle",
+      password: "0lelplR",
+    });
+  }, []);
 
   return (
     <>
@@ -30,6 +41,4 @@ function App() {
       </p>
     </>
   );
-}
-
-export default App;
+});
